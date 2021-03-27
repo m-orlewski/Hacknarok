@@ -1,3 +1,6 @@
+import math, time
+
+
 class Location(object):
     def __init__(self, id, name, address, coords, size):
         self.id = id
@@ -8,6 +11,10 @@ class Location(object):
         self.queue = []
         self.wait_time = 0
         self.inside = []
+        self.times = {}
+        self.client_count = 0
+        self.time_all_clients = 0
+
 
     def __str__(self):
         return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres: {self.address}\nRozmiar: {self.size}\nKolejka: {self.queue}\nW kolejce: {self.get_queue_size()}\n-----'
@@ -41,11 +48,19 @@ class Location(object):
         if customer in self.queue and customer not in self.inside:
             self.inside.append(customer)
             self.queue.remove(customer)
+            self.times[customer] = time.time()
             return 
         #If the user is inside and scans the code, he's leaving
         elif customer in self.inside and customer not in self.queue:
             self.inside.remove(customer)
+            self.client_count += 1
+            self.time_all_clients += time.time() - self.times[customer]
 
+    def estimated_time_wait(self):
+        if self.client_count:
+            return int(math.ceil((self.get_queue_size()+1) * int(math.ceil(self.time_all_clients/self.client_count)/60)))
+        else:
+            return "TBE"
 
 class DB(object):
     def __init__(self):
