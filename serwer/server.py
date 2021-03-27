@@ -188,7 +188,47 @@ def test_locations(name, coords, address):
 
 if __name__ == "__main__":
     
-    test_locations('Biedronka', [50.0934188, 20.0223255], 'Generała Leopolda Okulickiego')
+    test_locations('Biedronka', [50.0934188, 20.0223255], '')
+    test_locations('Biedronka', [50.024036949999996, 20.90635294440421], '')
+    test_locations('Biedronka', [50.0079917, 19.9588235], '')
+    test_locations('Biedronka', [50.06531735, 20.01617271773779], '')
+    test_locations('Biedronka', [50.08660945, 20.0268166642], '')
+    test_locations('Biedronka', [50.0842167, 19.924614087677945], '')
+    test_locations('Biedronka', [50.0732406, 20.0250832], '')
+    test_locations('Biedronka', [50.00630315, 20.019586802444557], '')
+    test_locations('Biedronka', [50.078535, 19.8920637], '')
+    test_locations('Biedronka', [50.012972250000004, 20.950265216025514], '')
+
+    test_locations('Kaufland', [50.0841107, 19.9362424], '')
+    test_locations('Kaufland', [50.02981145, 19.911305415038086], '')
+    test_locations('Kaufland', [50.01366645, 19.99631726004617], '')
+    test_locations('Kaufland', [50.090278549999994, 20.006228395294286], '')
+    test_locations('Kaufland', [50.0146524, 20.02249712916703], '')
+    test_locations('Kaufland', [50.0899052, 20.00552454410871], '')
+    test_locations('Kaufland', [50.084055649999996, 19.935317076583182], '')
+   
+    test_locations('Carrefour', [50.0772892, 20.015808], '')
+    test_locations('Carrefour', [50.0651897, 19.9845491], '')
+    test_locations('Carrefour', [50.06875235, 19.94610034475403], '')
+    test_locations('Carrefour', [50.0177032, 19.8934979], '')
+    test_locations('Carrefour', [50.0141425, 19.9326706], '')
+    test_locations('Carrefour', [50.0111953, 19.96337369866795], '')
+    test_locations('Carrefour', [50.0051071, 19.9498077], '')
+    test_locations('Carrefour', [50.0150077, 20.0209442], '')
+    test_locations('Carrefour', [50.074108, 20.0149843], '')
+    test_locations('Carrefour', [50.0768138, 20.01819609740246], '')
+
+    #https://www.openstreetmap.org/geocoder/search_osm_nominatim?query=kaufland+Kraków
+    #https://www.openstreetmap.org/search?query=Lewiatan Kraków
+   
+
+
+    
+
+
+    
+
+  
 
     httpd = HTTPServer(('localhost', 8080), Serv)
     print("Running server on localhost:8080")
