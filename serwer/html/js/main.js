@@ -25,7 +25,7 @@ $(document).ready(function() {
         statusInterval = window.setInterval(getStatus, 500);
         $('#myLargeModalLabel').modal('toggle')
       }
-  });   
+  });
 
 });
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
 
   $('.reserve-slot').click(function() {
     const id = $(this).attr('point_to');
-    const name = $(`#${id} .card-title`).text();  
+    const name = $(`#${id} .card-title`).text();
     var request = $.ajax({
       url: "reserve",
       method: "POST",
@@ -56,14 +56,15 @@ $(document).ready(function() {
       statusInterval = window.setInterval(getStatus, 500);
 
   });
-  
+
   //Blad w zapytaniu
   request.fail(function( jqXHR, textStatus ) {
       $("#alert-div").append('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
   });
 
   $('#myLargeModalLabel').modal('toggle')
-  
+
+  $('#qr-code').append('<img src="/generate" alt="kod qr" width="250px">')
   });
 
 
@@ -82,7 +83,7 @@ function getStatus() {
           //Musi czekac
         }
         return data
-    });   
+    });
 }
 
 
@@ -92,5 +93,5 @@ $(".cancel_slot").click(function() {
     .then(data => {
         console.log(data);
         clearInterval(statusInterval);
-    });   
+    });
 });

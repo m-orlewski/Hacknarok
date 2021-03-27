@@ -22,7 +22,7 @@
 
 <body>
 
-  
+
 
   <!-- Image and text -->
 <nav class="navbar navbar-light bg-light">
@@ -41,7 +41,7 @@
     <div class="modal-content">
       <div id="alert-div"></div>
       <div id="que-status"></div>
-
+	  <div id="qr-code"></div>
       <a href="#" class="btn btn-danger cancel_slot">Zrezygnuj</a>
     </div>
   </div>
@@ -57,12 +57,12 @@
 
 
   <div class="container">
-    <div class="row">    
+    <div class="row">
 
 
 
       {% for location in locations %}
-      
+
       <div class="card" style="width: 16rem;">
         <div class="card-body" id="{{location.id}}">
           <h5 class="card-title">{{location.name}}</h5>
@@ -73,7 +73,7 @@
       </div>
 
       {% endfor %}
-    
+
 
 
 
