@@ -44,6 +44,29 @@ def create_location(dane):
         return True
     return False
 
+
+def parse_path_with_args(path):
+
+    parsed_path = path.split('&')
+
+    question_mark = parsed_path[0].find("?")
+
+    parsed_path[0] = parsed_path[0][question_mark+1::]
+
+    keys = []
+    vals = []
+    for i in range(len(parsed_path)):
+       
+        parsed_path[i] = parsed_path[i].split("=")
+        keys.append(parsed_path[i][0])
+        vals.append(parsed_path[i][1])
+        #['/action?location_id=1', 'client_id=1', 'direction=out']
+
+    #return parsed_path
+    return dict(zip(keys, vals))
+
+
+
 class Serv(BaseHTTPRequestHandler):
     global database
     
@@ -121,6 +144,29 @@ class Serv(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
+        
+
+        if '/action?' in self.path:
+            
+            #handle request from scanner
+            #request pattenr: action?locati on_id=1&client_id=1&direction=out
+
+            value_key = parse_path_with_args(self.path)
+
+            location_id = value_key["location_id"]
+            customer_id = value_key["customer_id"]
+            direction = value_key["direction"]
+
+            location = database.get_location(location_id)
+
+            if direction == "in":
+                pass
+
+            if direction == "out":
+                pass
+
+            return
+
         # # Clear the database before new game/round
         # elif self.path.startswith('/reset'):
         #     data = get_db()
