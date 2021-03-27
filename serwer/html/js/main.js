@@ -1,4 +1,5 @@
 var statusInterval;
+var reserved;
 
 function makeid(length) {
   var result           = '';
@@ -11,6 +12,7 @@ function makeid(length) {
 }
 
 $(document).ready(function() {
+
   // $(".reserve_form_form").hide();
 
   if(document.cookie.length == 0) {
@@ -23,7 +25,10 @@ $(document).ready(function() {
   .then(data => {
       if(data != 0) {
         statusInterval = window.setInterval(getStatus, 500);
+        $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
         $('#myLargeModalLabel').modal('toggle')
+        reserved = data[0];
+
       }
   });   
 
@@ -39,6 +44,7 @@ $(document).ready(function() {
   $('.reserve-slot').click(function() {
     const id = $(this).attr('point_to');
     const name = $(`#${id} .card-title`).text();  
+    reserved = id;
     var request = $.ajax({
       url: "reserve",
       method: "POST",
@@ -61,7 +67,7 @@ $(document).ready(function() {
   request.fail(function( jqXHR, textStatus ) {
       $("#alert-div").append('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
   });
-
+  $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
   $('#myLargeModalLabel').modal('toggle')
   
   });
@@ -94,4 +100,28 @@ $(".cancel_slot").click(function() {
         $('#myLargeModalLabel').modal('toggle')
 
     });   
+});
+
+$(".toggle_enter").click(function() {
+
+  var request = $.ajax({
+    url: "action",
+    method: "GET",
+    data: { cusomterID: document.cookie,
+             locationID: reserved
+          },
+  })
+
+
+//Kiedy zapytanie jest poprawne
+request.done(function( data ) {
+    console.log(data);
+    //TODO uzytkownik wszedl
+});
+
+//Blad w zapytaniu
+request.fail(function( jqXHR, textStatus ) {
+  console.log('error');
+});
+
 });
