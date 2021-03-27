@@ -3,15 +3,15 @@ class Customer(object):
         self.customerID = customerID
 
 class Location(object):
-    def __init__(self, id, name, address, size, queue=[]):
+    def __init__(self, id, name, address, size):
         self.id = id
         self.name = name
         self.address = address
         self.size = size
-        self.queue = queue
+        self.queue = []
 
     def __str__(self):
-        return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres:{self.address}\nRozmiar:{self.size}\nKolejka:{self.queue}\n---'
+        return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres: {self.address}\nRozmiar: {self.size}\nKolejka: {self.queue}\nW kolejce: {self.get_queue_size()}\n-----'
 
     def get_max_customers(self):
         if self.size <= 100:
@@ -19,12 +19,18 @@ class Location(object):
         else:
             return self.size//20
 
-    def add_to_queue(self, customer):
+    def get_queue_size(self):
+        return len(self.queue)
+
+    def add_to_queue(self, customer, db):
+        if customer.customerID in db.banned:
+            print("you are banned from joining any queues")
+            return
         if customer.customerID in self.queue:
             print("already in queue")
             return
-        if len(queue) < get_max_customers(self):
-            self.queue.append(customer)
+        if len(self.queue) < self.get_max_customers():
+            self.queue.append(customer.customerID)
         else:
             print("queue is full")
 
@@ -37,6 +43,7 @@ class Location(object):
 class DB(object):
     def __init__(self):
         self.locations = {}
+        self.banned = []
 
     def add_location(self, locationID, name, address, size):
         #Sprawdz czy lokalizacja nie zostala juz dodana
@@ -57,5 +64,21 @@ if __name__ == "__main__":
     db = DB()
     db.add_location(123123, 'abc', 'ul', 120)
     db.add_location(123123, 'abc', 'ul', 120)
+    db.add_location(1, 'xyz', 'al', 1000)
     
     print(db.get_location(123123))
+    print(db.get_location(1))
+
+    customer_1 = Customer(1)
+    customer_2 = Customer(2)
+    customer_3 = Customer(3)
+
+    db.get_location(123123).add_to_queue(customer_1, db)
+    db.get_location(123123).add_to_queue(customer_3, db)
+    db.get_location(123123).add_to_queue(customer_2, db)
+
+    print(db.get_location(1))
+    print(db.get_location(123123))
+
+
+    
