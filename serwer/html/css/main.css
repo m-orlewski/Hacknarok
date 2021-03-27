@@ -1,12 +1,52 @@
-.card-columns {
-  text-align: center;
-}
-
 .card {
+  margin-top: 1em;
   text-align: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #searchLocationBar {
-  margin-top: 4em;
-  margin-bottom: 4em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-size: 1.5em;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.6);
+  color: black !important;
+}
+
+.reserve_form_form {
+  max-width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+}
+.reserve_form_form .input-group {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.modal-content {
+  padding: 1em;
+}
+
+.jumbotron {
+  background-image: url('../../html/img/sklep.jpg');
+  background-position: center top;
+  padding-top: 6em;
+  padding-bottom: 6em;
+}
+
+.jumbotron .container {
+  text-align: center;
+  color: black;
+  font-weight: bold !important;
+}
+
+.jumbotron .container h1 {
+font-size: 6em !important;
 }
