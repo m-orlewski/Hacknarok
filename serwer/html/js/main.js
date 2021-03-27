@@ -1,4 +1,5 @@
 var statusInterval;
+var reserved;
 
 function makeid(length) {
   var result           = '';
@@ -11,6 +12,7 @@ function makeid(length) {
 }
 
 $(document).ready(function() {
+
   // $(".reserve_form_form").hide();
 
   if(document.cookie.length == 0) {
@@ -23,9 +25,12 @@ $(document).ready(function() {
   .then(data => {
       if(data != 0) {
         statusInterval = window.setInterval(getStatus, 500);
+        $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
         $('#myLargeModalLabel').modal('toggle')
+        reserved = data[0];
+
       }
-  });   
+  });
 
 });
 
@@ -39,6 +44,7 @@ $(document).ready(function() {
   $('.reserve-slot').click(function() {
     const id = $(this).attr('point_to');
     const name = $(`#${id} .card-title`).text();  
+    reserved = id;
     var request = $.ajax({
       url: "reserve",
       method: "POST",
@@ -56,14 +62,15 @@ $(document).ready(function() {
       statusInterval = window.setInterval(getStatus, 500);
 
   });
-  
+
   //Blad w zapytaniu
   request.fail(function( jqXHR, textStatus ) {
       $("#alert-div").append('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
   });
-
+  $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
   $('#myLargeModalLabel').modal('toggle')
-  
+
+  $('#qr-code').append('<img src="/generate" alt="kod qr" width="250px">')
   });
 
 
@@ -73,14 +80,49 @@ function getStatus() {
     .then(res => res.text())
     .then(data => {
         data = JSON.parse(data);
-        console.log(data);
-        $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
         if( data[1] == 1 ) {
-          //Moze wchodzic
+          $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+          console.log("Mozesz wejsc");
         }
         else {
+          $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+          console.log("Musisz poczekac");
         }
-        console.log("Returned")
         return data
-    });   
+    });
 }
+
+
+$(".cancel_slot").click(function() {
+  fetch(`/cancel`)
+    .then(res => res.text())
+    .then(data => {
+        clearInterval(statusInterval);
+        $('#myLargeModalLabel').modal('toggle')
+
+    });   
+});
+
+$(".toggle_enter").click(function() {
+
+  var request = $.ajax({
+    url: "action",
+    method: "GET",
+    data: { cusomterID: document.cookie,
+             locationID: reserved
+          },
+  })
+
+
+//Kiedy zapytanie jest poprawne
+request.done(function( data ) {
+    console.log(data);
+    //TODO uzytkownik wszedl
+});
+
+//Blad w zapytaniu
+request.fail(function( jqXHR, textStatus ) {
+  console.log('error');
+});
+
+});
