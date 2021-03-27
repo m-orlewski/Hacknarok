@@ -23,7 +23,7 @@ class Location(object):
         if customer.customerID in self.queue:
             print("already in queue")
             return
-        if len(queue) < get_max_customers(self):
+        if len(self.queue) < self.get_max_customers():
             self.queue.append(customer)
         else:
             print("queue is full")
@@ -52,10 +52,20 @@ class DB(object):
         if locationID in self.locations.keys():
             return self.locations[locationID]
 
+    def get_all(self):
+        return_data = []
+        for location in self.locations.values():
+            dc = {
+                'name': location.name,
+                'id': location.id,
+                'address': location.address,
+                'queue_size': len(location.queue)
+            }
+            return_data.append(dc)
+        return return_data
 
 if __name__ == "__main__":
     db = DB()
     db.add_location(123123, 'abc', 'ul', 120)
-    db.add_location(123123, 'abc', 'ul', 120)
     
-    print(db.get_location(123123))
+    print(db.get_all())

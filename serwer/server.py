@@ -29,6 +29,8 @@ def create_location(dane):
     return False
 
 class Serv(BaseHTTPRequestHandler):
+    global database
+    
     def do_POST(self):
         print("Zapytanie POST")
         print(self.path)
@@ -52,10 +54,8 @@ class Serv(BaseHTTPRequestHandler):
         print(self.path)
 
         if self.path == '/':
-            self.path = '/index.html'
-            data = open('html/index.html').read()
             template = env.get_template('index.html')
-            output_from_parsed_template = template.render(users=['ala', 'janek', 'xd'], messages='')
+            output_from_parsed_template = template.render(locations=database.get_all())
 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
