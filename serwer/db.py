@@ -59,7 +59,8 @@ class DB(object):
                 'name': location.name,
                 'id': location.id,
                 'address': location.address,
-                'queue_size': len(location.queue)
+                'queue_size': len(location.queue),
+                'max_size': location.get_max_customers()
             }
             return_data.append(dc)
         return return_data
