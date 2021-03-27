@@ -3,9 +3,9 @@ import qrcode
 import qrcode.image.svg
 import aes
 
-# example use: make_qr('test.svg', 'client_id=1&direction=out')
-def make_qr(path, data):
+# example use: make_qr('customer_id=<id>')
+def make(data):
     encrypted_data = aes.encrypt(data)
     img = qrcode.make(encrypted_data, image_factory=qrcode.image.svg.SvgImage)
-    img.save(path)
-    
+    return img
+
