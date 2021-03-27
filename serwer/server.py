@@ -2,10 +2,17 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import json, mimetypes, threading, time, random, string
 from db import DB
-from hashlib import sha256 
+from hashlib import sha256
 from jinja2 import Template, Environment, FileSystemLoader
 from urllib.parse import unquote
 from http.cookies import SimpleCookie
+
+from inspect import getsourcefile
+import os.path as path, sys
+czytnik_dir = path.abspath(path.dirname(path.abspath(getsourcefile(lambda:0))) + '/../czytnik')
+sys.path.insert(0, czytnik_dir)
+import gen_qr
+sys.path.pop(0)
 
 html_path = '/html'
 
@@ -55,12 +62,12 @@ def parse_path_with_args(path):
 
 class Serv(BaseHTTPRequestHandler):
     global database
-    
+
     def do_POST(self):
-        print("Zapytanie POST")        
+        print("Zapytanie POST")
         if self.path == '/create':
-            content_length = int(self.headers['Content-Length']) 
-            post_data = self.rfile.read(content_length) 
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
             #Parse POST data, and send response
             if create_location(post_data.decode('utf-8')):
                 self.send_response(200)
@@ -74,8 +81,8 @@ class Serv(BaseHTTPRequestHandler):
                 self.wfile.write(bytes('ok', "utf-8"))
 
         elif self.path == '/reserve':
-            content_length = int(self.headers['Content-Length']) 
-            post_data = self.rfile.read(content_length) 
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
             #Parse POST data, and send response
             if add_reservation(post_data.decode('utf-8')):
                 self.send_response(200)
@@ -87,8 +94,8 @@ class Serv(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
                 self.wfile.write(bytes('ok', "utf-8"))
-        
-        
+
+
 
     def do_GET(self):
         if self.path == '/':
@@ -128,8 +135,17 @@ class Serv(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
-        
-        if self.path == '/cancel':
+
+        if self.path == '/generate':
+            cookie = self.headers.get('Cookie')
+            self.send_response(200)
+            self.send_header("Content-type", "image/svg+xml")
+            self.end_headers()
+            gen_qr.make(cookie)._write(self.wfile)
+            return
+
+        elif self.path == '/cancel':
+            print("CANCELING")
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             if database.get_location(status[0]).remove_from_queue(cookie):
@@ -162,7 +178,7 @@ class Serv(BaseHTTPRequestHandler):
                 print("Opening here")
                 data = open(self.path[1::], 'rb').read()
                 mimetype = 'image/jpeg'
-                self.send_response(200)            
+                self.send_response(200)
                 self.send_header('Content-type', mimetype)
                 self.end_headers()
                 self.wfile.write(data)
@@ -170,7 +186,7 @@ class Serv(BaseHTTPRequestHandler):
             else:
                 data = open(self.path[1::]).read()
                 mimetype, _ = mimetypes.guess_type(self.path[1::])
-            self.send_response(200)            
+            self.send_response(200)
             self.send_header('Content-type', mimetype)
             self.end_headers()
             self.wfile.write(bytes(data, "utf-8"))
@@ -230,6 +246,6 @@ if __name__ == "__main__":
 
   
 
-    httpd = HTTPServer(('localhost', 8080), Serv)
+    httpd = HTTPServer(('0.0.0.0', 8080), Serv)
     print("Running server on localhost:8080")
     httpd.serve_forever()

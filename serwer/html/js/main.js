@@ -30,7 +30,7 @@ $(document).ready(function() {
         reserved = data[0];
 
       }
-  });   
+  });
 
 });
 
@@ -62,14 +62,15 @@ $(document).ready(function() {
       statusInterval = window.setInterval(getStatus, 500);
 
   });
-  
+
   //Blad w zapytaniu
   request.fail(function( jqXHR, textStatus ) {
       $("#alert-div").append('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
   });
   $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
   $('#myLargeModalLabel').modal('toggle')
-  
+
+  $('#qr-code').append('<img src="/generate" alt="kod qr" width="250px">')
   });
 
 
@@ -88,7 +89,7 @@ function getStatus() {
           console.log("Musisz poczekac");
         }
         return data
-    });   
+    });
 }
 
 
