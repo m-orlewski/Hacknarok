@@ -49,38 +49,38 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1>Kolejkomierz</h1>
-    <p class="lead">Koniec z staniem w kolejkach.</p>
+    <h3>Koniec z staniem w kolejkach.</h3>
     <input type="text" class="form-control text-center" id="searchLocationBar" placeholder="Znajdź lokalizację..">
   </div>
 </div>
 
 
   <div class="container">
-
-        <div class="row">
-    
-          <div class="card-columns">
- 
-
-            {# Locations #}
-		      	{% for location in locations %}
-            <div class="card">
-              <div class="card-body" id="{{location.id}}">
-                <h5 class="card-title">{{location.name}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{location.address}}</h6>
-                <p class="card-text"> <i class="fas fa-users text-success"></i>  {{location.queue_size}}/{{location.max_size}} </p>
-                <a href="#" point_to="{{location.id}}" class="btn btn-primary reserve-slot">Rezerwuj</a>
-              </div>
-            </div>
-			      {% endfor %}
+    <div class="row">    
 
 
 
-          </div>
+      {% for location in locations %}
+      
+      <div class="card" style="width: 16rem;">
+        <div class="card-body" id="{{location.id}}">
+          <h5 class="card-title">{{location.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{location.address}}</h6>
+          <p class="card-text"> <i class="fas fa-users text-success"></i>  {{location.queue_size}}/{{location.max_size}} </p>
+          <a href="#" point_to="{{location.id}}" class="btn btn-primary reserve-slot">Rezerwuj</a>
         </div>
+      </div>
+
+      {% endfor %}
+    
+
+
+
+
+</div>
   </div>
 
-  
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="https://kit.fontawesome.com/fdbbd7bda3.js" crossorigin="anonymous"></script>

@@ -1,9 +1,8 @@
-.card-columns {
-  text-align: center;
-}
-
 .card {
+  margin-top: 1em;
   text-align: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #searchLocationBar {
