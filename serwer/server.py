@@ -91,6 +91,7 @@ class Serv(BaseHTTPRequestHandler):
         
 
     def do_GET(self):
+        print(self.path)
         if self.path == '/':
             template = env.get_template('index.html')
             output_from_parsed_template = template.render(locations=database.get_all())
@@ -101,7 +102,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/create':
+        elif self.path == '/create':
             template = env.get_template('create.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -111,7 +112,7 @@ class Serv(BaseHTTPRequestHandler):
             return
 
 
-        if self.path == '/register':
+        elif self.path == '/register':
             template = env.get_template('register.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -120,7 +121,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/status':
+        elif self.path == '/status':
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             self.send_response(200)
@@ -129,7 +130,8 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
         
-        if self.path == '/cancel':
+        elif self.path == '/cancel':
+            print("CANCELING")
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             if database.get_location(status[0]).remove_from_queue(cookie):
@@ -143,7 +145,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(bytes('err', "utf-8"))
 
-        if '/action?' in self.path:
+        elif '/action?' in self.path:
             #handle request from scanner
             #request pattenr: action?locati on_id=1&client_id=1&direction=out
             value_key = parse_path_with_args(self.path)
@@ -168,7 +170,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.wfile.write(data)
                 return
             else:
-                data = open(self.path[1::]).read()
+                data = open(self.path[1::], encoding='utf8').read()
                 mimetype, _ = mimetypes.guess_type(self.path[1::])
             self.send_response(200)            
             self.send_header('Content-type', mimetype)
@@ -189,6 +191,8 @@ def test_locations(name, coords, address):
 if __name__ == "__main__":
     
     test_locations('Biedronka', [50.0934188, 20.0223255], 'Generała Leopolda Okulickiego')
+    test_locations('Biedronka2', [50.0732406, 20.0250832], 'Generała Leopolda Okulickiego')
+
 
     httpd = HTTPServer(('localhost', 8080), Serv)
     print("Running server on localhost:8080")

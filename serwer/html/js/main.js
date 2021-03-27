@@ -75,9 +75,11 @@ function getStatus() {
         data = JSON.parse(data);
         if( data[1] == 1 ) {
           $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+          console.log("Mozesz wejsc");
         }
         else {
           $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+          console.log("Musisz poczekac");
         }
         return data
     });   
