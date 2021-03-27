@@ -1,4 +1,11 @@
+certifi==2020.12.5
+chardet==4.0.0
+idna==2.10
+numpy==1.20.1
+opencv-python==4.5.1.48
 Pillow==8.1.2
-pyzbar==0.1.8
+pycrypto==2.6.1
 qrcode==6.1
+requests==2.25.1
 six==1.15.0
+urllib3==1.26.4
