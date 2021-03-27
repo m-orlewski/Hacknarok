@@ -46,6 +46,8 @@
     <div class="modal-content">
       <div id="alert-div"></div>
       <div id="que-status"></div>
+      <a href="#" class="btn btn-danger toggle_enter">Test toggle</a>
+
       <a href="#" class="btn btn-danger cancel_slot">Zrezygnuj</a>
     </div>
   </div>
@@ -59,7 +61,6 @@
   <div class="container">
 
       <div class="container-menu">
-        <h3>Koniec z staniem w kolejkach.</h3>
         <input type="text" class="form-control text-center" id="searchLocationBar" placeholder="Znajdź lokalizację..">
      </div>
 
@@ -78,7 +79,6 @@
           <a href="#" point_to="{{location.id}}" class="btn btn-primary reserve-slot">Rezerwuj</a>
         </div>
       </div>
-
       {% endfor %}
     
 
@@ -98,8 +98,11 @@
       zoomOffset: -1
     }).addTo(mymap);
   
-    L.marker([50.063295, 19.93556]).addTo(mymap)
-      .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+    {% for location in locations %}      
+    L.marker({{location.coords}}).addTo(mymap)
+      .bindPopup('<b>{{location.name}}</b><br/>{{location.address}}<br/><i class="fas fa-users text-success"></i>  {{location.inside}}/{{location.max_size}}');
+    {% endfor %}
   
     // L.circle([51.508, -0.11], 500, {
     //   color: 'red',
@@ -116,14 +119,6 @@
   
     var popup = L.popup();
   
-    function onMapClick(e) {
-      popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(mymap);
-    }
-  
-    mymap.on('click', onMapClick);
   
   </script>
   
