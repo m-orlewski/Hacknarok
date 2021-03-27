@@ -61,6 +61,18 @@ class DB(object):
                 return (location.id, location.queue.index(customerID)+1)
         return 0
 
+    def get_all(self):
+        return_data = []
+        for location in self.locations.values():
+            dc = {
+                'name': location.name,
+                'id': location.id,
+                'address': location.address,
+                'queue_size': len(location.queue),
+                'max_size': location.get_max_customers()
+            }
+            return_data.append(dc)
+        return return_data
 
 
 
