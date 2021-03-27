@@ -20,13 +20,16 @@ class Location(object):
             return self.size//20
 
     def add_to_queue(self, customer):
-        if customer.customerID in self.queue:
-            print("already in queue")
-            return
+        for c in self.queue:
+            if customer.customerID == c.customerID: 
+                print("already in queue")
+                return False
         if len(self.queue) < self.get_max_customers():
             self.queue.append(customer)
+            return True
         else:
             print("queue is full")
+            return False
 
     def remove_from_queue(self, customer):
         if customer.customerID not in self.queue:

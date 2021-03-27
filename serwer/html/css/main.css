@@ -11,13 +11,17 @@
   margin-bottom: 4em;
 }
 
-.reserve_form_button {
+.reserve_form_form {
   max-width: 60%;
   margin-left: auto;
   margin-right: auto;
   padding: 1em;
 }
-.reserve_form_button .input-group {
+.reserve_form_form .input-group {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+.modal-content {
+  padding: 1em;
 }

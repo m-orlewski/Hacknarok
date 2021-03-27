@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl-PL">
 
 <head>
 
   <meta charset="utf-8">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
@@ -49,28 +52,31 @@
 
   <!-- Page Content -->
 
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="alert-div"></div>
+
+
+    </div>
+  </div>
+</div>
+
 
   <div class="container">
 
 
-      <div class="reserve_form_button">
+      <!-- <div class="reserve_form_form">
         <h3 class="text-center">Rezerwuj miejsce w kolejce do </h3>
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text">Imię</span>
           </div>
-          <input type="text" class="form-control">
-        </div>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Liczba osób</span>
-          </div>
-          <input type="number" class="form-control">
+          <input type="text" class="form-control" id="user_name">
         </div>
         <input type="hidden" id="reserve_id">
         <button class="btn btn-dark">Rezerwuj</button>
-
-      </div>
+      </div> -->
 
 
         <input type="text" class="form-control text-center" id="searchLocationBar" placeholder="Znajdz swoj sklep..">
@@ -103,7 +109,7 @@
 
   <!-- Bootstrap core JavaScript -->
   <script src="https://kit.fontawesome.com/fdbbd7bda3.js" crossorigin="anonymous"></script>
-  <script src="/html/vendor/jquery/jquery.slim.min.js"></script>
+  <script src="/html/vendor/jquery/jquery.js"></script>
   <script src="/html/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/html/js/main.js"></script>
 
