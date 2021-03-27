@@ -9,6 +9,7 @@ class Location(object):
         self.address = address
         self.size = size
         self.queue = []
+        self.wait_time = 0
 
     def __str__(self):
         return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres: {self.address}\nRozmiar: {self.size}\nKolejka: {self.queue}\nW kolejce: {self.get_queue_size()}\n-----'
@@ -54,6 +55,14 @@ class DB(object):
         if locationID in self.locations.keys():
             return self.locations[locationID]
 
+    def queue_index(self, customerID):
+        for location in self.locations.values():
+            if customerID in location.queue:
+                return (location.id, location.queue.index(customerID)+1)
+        return 0
+
+
+
 
 if __name__ == "__main__":
     db = DB()
@@ -68,12 +77,16 @@ if __name__ == "__main__":
     customer_2 = Customer(2)
     customer_3 = Customer(3)
 
-    db.get_location(123123).add_to_queue(customer_1, db)
-    db.get_location(123123).add_to_queue(customer_3, db)
-    db.get_location(123123).add_to_queue(customer_2, db)
+    db.get_location(123123).add_to_queue(customer_1)
+    db.get_location(123123).add_to_queue(customer_3)
+    db.get_location(123123).add_to_queue(customer_2)
 
     print(db.get_location(1))
     print(db.get_location(123123))
+
+    print(db.queue_index(customer_1.customerID))
+    print(db.queue_index(customer_2.customerID))
+    print(db.queue_index(customer_3.customerID))
 
 
     
