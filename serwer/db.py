@@ -3,7 +3,7 @@ class Location(object):
         self.id = id
         self.name = name
         self.address = address
-        self.coords = []
+        self.coords = coords
         self.size = size
         self.queue = []
         self.wait_time = 0
@@ -79,6 +79,7 @@ class DB(object):
                 'name': location.name,
                 'id': location.id,
                 'address': location.address,
+                'coords': location.coords,
                 'queue_size': len(location.queue),
                 'inside': len(location.inside),
                 'max_size': location.get_max_customers()
