@@ -156,6 +156,7 @@ class Serv(BaseHTTPRequestHandler):
             location_id = value_key["location_id"]
             customer_id = value_key["customer_id"]
             direction = value_key["direction"]
+            
 
             location = database.get_location(location_id)
 
@@ -200,3 +201,4 @@ if __name__ == "__main__":
     httpd = HTTPServer(('localhost', 8080), Serv)
     print("Running server on localhost:8080")
     httpd.serve_forever()
+

@@ -17,7 +17,9 @@ class Location(object):
 
     def get_max_customers(self):
         if self.size <= 100:
-            return self.size//15
+               
+            return self.size//15 if self.size//15>0 else 1
+
         else:
             return self.size//20
 
@@ -40,6 +42,7 @@ class Location(object):
             print("can't remove if you're not in queue")
         else:
             self.queue.remove(customer)
+   
 
 class DB(object):
     def __init__(self):
@@ -77,8 +80,7 @@ class DB(object):
             }
             return_data.append(dc)
         return return_data
-
-
+    
 
 if __name__ == "__main__":
     db = DB()
