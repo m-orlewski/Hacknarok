@@ -79,8 +79,18 @@ function getStatus() {
           //Moze wchodzic
         }
         else {
+          //Musi czekac
         }
-        console.log("Returned")
         return data
     });   
 }
+
+
+$(".cancel_slot").click(function() {
+  fetch(`/cancel`)
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+        clearInterval(statusInterval);
+    });   
+});

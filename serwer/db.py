@@ -30,9 +30,11 @@ class Location(object):
     def remove_from_queue(self, customer):
         if customer not in self.queue:
             print("can't remove if you're not in queue")
+            return False
         else:
             self.queue.remove(customer)
-    
+            return True
+            
     def went_inside(self, customer):
         if customer not in self.inside or customer not in self.queue:
             print("Not in queue and not inside")

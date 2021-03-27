@@ -16,12 +16,9 @@ env = Environment(loader=FileSystemLoader('html'))
 def add_reservation(dane):
     global database
     dane = unquote(dane)
-    print(dane)
     parsed_string = dane.replace('+', ' ').split('=')
-    # name = parsed_string[1].split('&')[0].strip()
     location_id = parsed_string[1].split('&')[0].strip()
     customer_id = parsed_string[2].strip()
-    print(location_id, customer_id)
     if database.get_location(location_id).add_to_queue(customer_id):
         return True
     print("Blad podczas dodawania")
@@ -30,14 +27,12 @@ def add_reservation(dane):
 def create_location(dane):
     global database
     dane = unquote(dane)
-    print(dane)
     parsed_string = dane.replace('+', ' ').split('=')
     name = parsed_string[1].split('&')[0].strip()
     address = parsed_string[2].split('&')[0].strip()
     size = parsed_string[3].strip()
     hash_data = f'{name}{address}{size}'
     locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-    print(name, address, size, locationid)
     if database.add_location(locationid, name, address, int(size) ):
         return True
     return False
@@ -53,7 +48,6 @@ def parse_path_with_args(path):
         parsed_path[i] = parsed_path[i].split("=")
         keys.append(parsed_path[i][0])
         vals.append(parsed_path[i][1])
-        #['/action?location_id=1', 'client_id=1', 'direction=out']
     return dict(zip(keys, vals))
 
 
@@ -62,9 +56,7 @@ class Serv(BaseHTTPRequestHandler):
     global database
     
     def do_POST(self):
-        print("Zapytanie POST")
-        print(self.path)
-        
+        print("Zapytanie POST")        
         if self.path == '/create':
             content_length = int(self.headers['Content-Length']) 
             post_data = self.rfile.read(content_length) 
@@ -136,6 +128,19 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
         
+        if self.path == '/cancel':
+            cookie = self.headers.get('Cookie')
+            status = database.queue_index(cookie)
+            if database.get_location(status[0]).remove_from_queue(cookie):
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('ok', "utf-8"))
+            else:
+                self.send_response(404)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('err', "utf-8"))
 
         if '/action?' in self.path:
             #handle request from scanner
@@ -177,7 +182,6 @@ if __name__ == "__main__":
         size = random.randint(20, 1000)
         hash_data = f'{name}{address}{size}'
         locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-        print(name, address, size, locationid)
         database.add_location(locationid, name, address, int(size) )
 
     httpd = HTTPServer(('localhost', 8080), Serv)
