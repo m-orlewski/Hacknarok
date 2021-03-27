@@ -18,6 +18,14 @@ $(document).ready(function() {
   }
   console.log( document.cookie );
 
+  fetch(`/status`)
+  .then(res => res.text())
+  .then(data => {
+      if(data != 0) {
+        statusInterval = window.setInterval(getStatus, 500);
+        $('#myLargeModalLabel').modal('toggle')
+      }
+  });   
 
 });
 
@@ -30,18 +38,7 @@ $(document).ready(function() {
 
   $('.reserve-slot').click(function() {
     const id = $(this).attr('point_to');
-    const name = $(`#${id} .card-title`).text();
-    // $(".reserve_form_form h3").text(`Rezerwuj miejsce w kolejce do ${name}`);
-    // $("#reserve_id").val(id);
-    // $(".reserve_form_form").fadeIn();
-  // });
-
-  // $(".reserve_form_form button").click(function() {
-    // const name = $("#user_name").val();
-    // const location_id = $("#reserve_id").val();
-
-    // console.log(name, location_id);
-  
+    const name = $(`#${id} .card-title`).text();  
     var request = $.ajax({
       url: "reserve",
       method: "POST",
@@ -75,6 +72,15 @@ function getStatus() {
     fetch(`/status`)
     .then(res => res.text())
     .then(data => {
-        console.log(data)
+        data = JSON.parse(data);
+        console.log(data);
+        $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+        if( data[1] == 1 ) {
+          //Moze wchodzic
+        }
+        else {
+        }
+        console.log("Returned")
+        return data
     });   
 }

@@ -24,8 +24,9 @@ def add_reservation(dane):
     customer_id = parsed_string[2].strip()
     print(location_id, customer_id)
     customer = Customer(customer_id)
-    if  database.get_location(location_id).add_to_queue(customer):
+    if database.get_location(location_id).add_to_queue(customer):
         return True
+    print("Blad podczas dodawania")
     return False
 
 def create_location(dane):
@@ -114,11 +115,11 @@ class Serv(BaseHTTPRequestHandler):
 
         if self.path == '/status':
             cookie = self.headers.get('Cookie')
-
+            status = database.queue_index(cookie)
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write(bytes('ok', "utf-8"))
+            self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
         # # Clear the database before new game/round
         # elif self.path.startswith('/reset'):

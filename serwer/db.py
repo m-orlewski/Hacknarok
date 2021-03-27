@@ -10,6 +10,7 @@ class Location(object):
         self.size = size
         self.queue = []
         self.wait_time = 0
+        self.inside = []
 
     def __str__(self):
         return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres: {self.address}\nRozmiar: {self.size}\nKolejka: {self.queue}\nW kolejce: {self.get_queue_size()}\n-----'
@@ -26,11 +27,13 @@ class Location(object):
     def add_to_queue(self, customer):
         if customer.customerID in self.queue:
             print("already in queue")
-            return
+            return False
         if len(self.queue) < self.get_max_customers():
             self.queue.append(customer.customerID)
+            return True
         else:
             print("queue is full")
+            return False
 
     def remove_from_queue(self, customer):
         if customer.customerID not in self.queue:
@@ -58,7 +61,7 @@ class DB(object):
     def queue_index(self, customerID):
         for location in self.locations.values():
             if customerID in location.queue:
-                return (location.id, location.queue.index(customerID)+1)
+                return (location.id, location.queue.index(customerID)+1, location.wait_time)
         return 0
 
     def get_all(self):
@@ -69,6 +72,7 @@ class DB(object):
                 'id': location.id,
                 'address': location.address,
                 'queue_size': len(location.queue),
+                'inside': len(location.inside),
                 'max_size': location.get_max_customers()
             }
             return_data.append(dc)
