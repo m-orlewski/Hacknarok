@@ -1,7 +1,3 @@
-class Customer(object):
-    def __init__(self, customerID):
-        self.customerID = customerID
-
 class Location(object):
     def __init__(self, id, name, address, size):
         self.id = id
@@ -17,7 +13,7 @@ class Location(object):
 
     def get_max_customers(self):
         if self.size <= 100:
-            return self.size//15
+            return self.size//15 if self.size//15 > 0 else 1
         else:
             return self.size//20
 
@@ -25,21 +21,32 @@ class Location(object):
         return len(self.queue)
 
     def add_to_queue(self, customer):
-        if customer.customerID in self.queue:
+        if customer in self.queue:
             print("already in queue")
             return False
-        if len(self.queue) < self.get_max_customers():
-            self.queue.append(customer.customerID)
-            return True
-        else:
-            print("queue is full")
-            return False
+        self.queue.append(customer)
+        return True
 
     def remove_from_queue(self, customer):
-        if customer.customerID not in self.queue:
+        if customer not in self.queue:
             print("can't remove if you're not in queue")
         else:
             self.queue.remove(customer)
+    
+    def went_inside(self, customer):
+        if customer not in self.inside or customer not in self.queue:
+            print("Not in queue and not inside")
+            return False
+        self.inside.append(customer)
+        self.queue.remove(customer)
+        return True
+
+    def left(self, customer):
+        if customer not in self.inside or customer not in self.queue:
+            print("Not in queue and not inside")
+            return False
+        self.inside.remove(customer)
+        return True
 
 class DB(object):
     def __init__(self):

@@ -1,11 +1,10 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
-import json, mimetypes, threading, time
+import json, mimetypes, threading, time, random, string
 from db import DB
 from hashlib import sha256 
 from jinja2 import Template, Environment, FileSystemLoader
 from urllib.parse import unquote
-from db import Customer
 from http.cookies import SimpleCookie
 
 html_path = '/html'
@@ -23,8 +22,7 @@ def add_reservation(dane):
     location_id = parsed_string[1].split('&')[0].strip()
     customer_id = parsed_string[2].strip()
     print(location_id, customer_id)
-    customer = Customer(customer_id)
-    if database.get_location(location_id).add_to_queue(customer):
+    if database.get_location(location_id).add_to_queue(customer_id):
         return True
     print("Blad podczas dodawania")
     return False
@@ -46,23 +44,16 @@ def create_location(dane):
 
 
 def parse_path_with_args(path):
-
     parsed_path = path.split('&')
-
     question_mark = parsed_path[0].find("?")
-
     parsed_path[0] = parsed_path[0][question_mark+1::]
-
     keys = []
     vals = []
     for i in range(len(parsed_path)):
-       
         parsed_path[i] = parsed_path[i].split("=")
         keys.append(parsed_path[i][0])
         vals.append(parsed_path[i][1])
         #['/action?location_id=1', 'client_id=1', 'direction=out']
-
-    #return parsed_path
     return dict(zip(keys, vals))
 
 
@@ -147,35 +138,18 @@ class Serv(BaseHTTPRequestHandler):
         
 
         if '/action?' in self.path:
-            
             #handle request from scanner
             #request pattenr: action?locati on_id=1&client_id=1&direction=out
-
             value_key = parse_path_with_args(self.path)
-
             location_id = value_key["location_id"]
             customer_id = value_key["customer_id"]
             direction = value_key["direction"]
-
             location = database.get_location(location_id)
-
             if direction == "in":
-                pass
-
+                database.get_location(location_id).went_inside(customer_id)
             if direction == "out":
                 pass
-
             return
-
-        # # Clear the database before new game/round
-        # elif self.path.startswith('/reset'):
-        #     data = get_db()
-        #     data.clear()
-        #     self.send_response(200)
-        #     self.send_header("Content-type", "text/html")
-        #     self.end_headers()
-        #     self.wfile.write(bytes("Database cleared", "utf-8"))
-        #     return
 
         else:
             if self.path[1::].endswith('.jpg'):
@@ -197,6 +171,15 @@ class Serv(BaseHTTPRequestHandler):
             return
 
 if __name__ == "__main__":
+    for i in range(20):
+        name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+        address = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        size = random.randint(20, 1000)
+        hash_data = f'{name}{address}{size}'
+        locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
+        print(name, address, size, locationid)
+        database.add_location(locationid, name, address, int(size) )
+
     httpd = HTTPServer(('localhost', 8080), Serv)
     print("Running server on localhost:8080")
     httpd.serve_forever()
