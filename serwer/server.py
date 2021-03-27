@@ -37,25 +37,22 @@ def create_location(dane):
     parsed_string = dane.replace('+', ' ').split('=')
     name = parsed_string[1].split('&')[0].strip()
     address = parsed_string[2].split('&')[0].strip()
-    size = parsed_string[3].strip()
-    hash_data = f'{name}{address}{size}'
+    coords = parsed_string[3].split('&')[0].strip()
+    size = parsed_string[4].strip()
+    hash_data = f'{name}{address}{coords}{size}'
     locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-    if database.add_location(locationid, name, address, int(size) ):
+    if database.add_location(locationid, name, address, coords, int(size) ):
         return True
     return False
 
 
 def parse_path_with_args(path):
-    parsed_path = path.split('&')
-    question_mark = parsed_path[0].find("?")
-    parsed_path[0] = parsed_path[0][question_mark+1::]
-    keys = []
-    vals = []
-    for i in range(len(parsed_path)):
-        parsed_path[i] = parsed_path[i].split("=")
-        keys.append(parsed_path[i][0])
-        vals.append(parsed_path[i][1])
-    return dict(zip(keys, vals))
+    path = unquote(path)
+    path = path[path.find('?')+1:].split('&')
+    data = {}
+    for el in path:
+        data[ el[:el.find('=')] ] = el[el.find('=')+1:]
+    return data
 
 
 
@@ -97,6 +94,7 @@ class Serv(BaseHTTPRequestHandler):
 
 
     def do_GET(self):
+        print(self.path)
         if self.path == '/':
             template = env.get_template('index.html')
             output_from_parsed_template = template.render(locations=database.get_all())
@@ -107,7 +105,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/create':
+        elif self.path == '/create':
             template = env.get_template('create.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -117,7 +115,7 @@ class Serv(BaseHTTPRequestHandler):
             return
 
 
-        if self.path == '/register':
+        elif self.path == '/register':
             template = env.get_template('register.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -126,7 +124,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/status':
+        elif self.path == '/status':
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             self.send_response(200)
@@ -143,7 +141,8 @@ class Serv(BaseHTTPRequestHandler):
             gen_qr.make(cookie)._write(self.wfile)
             return
 
-        if self.path == '/cancel':
+        elif self.path == '/cancel':
+            print("CANCELING")
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             if database.get_location(status[0]).remove_from_queue(cookie):
@@ -157,18 +156,19 @@ class Serv(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(bytes('err', "utf-8"))
 
-        if '/action?' in self.path:
+        elif '/action?' in self.path:
             #handle request from scanner
             #request pattenr: action?locati on_id=1&client_id=1&direction=out
             value_key = parse_path_with_args(self.path)
-            location_id = value_key["location_id"]
-            customer_id = value_key["customer_id"]
-            direction = value_key["direction"]
+            customer_id = value_key["cusomterID"]
+            location_id = value_key["locationID"]
+            print(location_id, customer_id)
             location = database.get_location(location_id)
-            if direction == "in":
-                database.get_location(location_id).went_inside(customer_id)
-            if direction == "out":
-                pass
+            data = location.switch_user(customer_id)
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(bytes('ok', "utf-8"))
             return
 
         else:
@@ -182,7 +182,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.wfile.write(data)
                 return
             else:
-                data = open(self.path[1::]).read()
+                data = open(self.path[1::], encoding='utf8').read()
                 mimetype, _ = mimetypes.guess_type(self.path[1::])
             self.send_response(200)
             self.send_header('Content-type', mimetype)
@@ -190,14 +190,21 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(data, "utf-8"))
             return
 
+
+def test_locations(name, coords, address):
+    global database
+    size = random.randint(20, 1000)
+    hash_data = f'{name}{address}{coords}{size}'
+    locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
+    database.add_location(locationid, name, address, coords, int(size) )
+
+
+
 if __name__ == "__main__":
-    for i in range(20):
-        name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
-        address = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        size = random.randint(20, 1000)
-        hash_data = f'{name}{address}{size}'
-        locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-        database.add_location(locationid, name, address, int(size) )
+    
+    test_locations('Biedronka', [50.0934188, 20.0223255], 'Generała Leopolda Okulickiego')
+    test_locations('Biedronka2', [50.0732406, 20.0250832], 'Generała Leopolda Okulickiego')
+
 
     httpd = HTTPServer(('0.0.0.0', 8080), Serv)
     print("Running server on localhost:8080")
