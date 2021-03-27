@@ -58,7 +58,14 @@ class Location(object):
 
     def estimated_time_wait(self):
         if self.client_count:
-            return int(math.ceil((self.get_queue_size()+1) * int(math.ceil(self.time_all_clients/self.client_count)/60)))
+            time = int(math.ceil((self.get_queue_size()+1) * int(math.ceil(self.time_all_clients/self.client_count/60))))
+            hours = time//60
+            minutes = time%60
+            time = "{:02d}:{:02d}".format(hours, minutes)
+            print("-"* 30)
+            print(time)
+            print("-"* 30)
+            return time
         else:
             return "TBE"
 
