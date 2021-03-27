@@ -151,12 +151,8 @@ class Serv(BaseHTTPRequestHandler):
             value_key = parse_path_with_args(self.path)
             location_id = value_key["location_id"]
             customer_id = value_key["customer_id"]
-            direction = value_key["direction"]
             location = database.get_location(location_id)
-            if direction == "in":
-                database.get_location(location_id).went_inside(customer_id)
-            if direction == "out":
-                pass
+            database.get_location.switch_user(customer_id)
             return
 
         else:

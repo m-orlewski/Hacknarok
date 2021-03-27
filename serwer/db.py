@@ -36,20 +36,16 @@ class Location(object):
             self.queue.remove(customer)
             return True
 
-    def went_inside(self, customer):
-        if customer not in self.inside or customer not in self.queue:
-            print("Not in queue and not inside")
-            return False
-        self.inside.append(customer)
-        self.queue.remove(customer)
-        return True
+    def switch_user(self, customer):
+        #If the user in queue and scans the code, he's going inside
+        if customer in self.queue and customer not in self.inside:
+            self.inside.append(customer)
+            self.queue.remove(customer)
+            return 
+        #If the user is inside and scans the code, he's leaving
+        elif customer in self.inside and customer not in self.queue:
+            self.inside.remove(customer)
 
-    def left(self, customer):
-        if customer not in self.inside or customer not in self.queue:
-            print("Not in queue and not inside")
-            return False
-        self.inside.remove(customer)
-        return True
 
 class DB(object):
     def __init__(self):
