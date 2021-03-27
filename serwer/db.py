@@ -3,12 +3,12 @@ class Customer(object):
         self.customerID = customerID
 
 class Location(object):
-    def __init__(self, id, name, address, size, queue=[]):
+    def __init__(self, id, name, address, size):
         self.id = id
         self.name = name
         self.address = address
         self.size = size
-        self.queue = queue
+        self.queue = []
 
     def __str__(self):
         return f'-----\nLokacja: {self.id}\nNazwa: {self.name}\nAdres:{self.address}\nRozmiar:{self.size}\nKolejka:{self.queue}\n---'
@@ -40,12 +40,10 @@ class DB(object):
 
     def add_location(self, locationID, name, address, size):
         #Sprawdz czy lokalizacja nie zostala juz dodana
-        print(self.locations)
         if locationID in self.locations.keys():
             print("Location already exists")
             return False
         self.locations[locationID] = Location(locationID, name, address, size)
-        print(self.locations)
         return True
 
     def get_location(self, locationID):
@@ -68,5 +66,19 @@ class DB(object):
 if __name__ == "__main__":
     db = DB()
     db.add_location(123123, 'abc', 'ul', 120)
+    db.add_location(1, 'xyz', 'al', 1000)
     
-    print(db.get_all())
+    print(db.get_location(123123))
+    print(db.get_location(1))
+
+    customer_1 = Customer(1)
+    customer_2 = Customer(2)
+    customer_3 = Customer(3)
+
+    k = db.get_location(123123)
+    k.add_to_queue(customer_1)
+    # db.get_location(123123).add_to_queue(customer_3)
+    # db.get_location(123123).add_to_queue(customer_2)
+
+    print(db.get_location(1))
+    print(db.get_location(123123))

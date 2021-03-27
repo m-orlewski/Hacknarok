@@ -4,6 +4,7 @@ import json, mimetypes, threading, time
 from db import DB
 from hashlib import sha256 
 from jinja2 import Template, Environment, FileSystemLoader
+from urllib.parse import unquote
 
 
 html_path = '/html'
@@ -12,10 +13,16 @@ database = DB()
 
 env = Environment(loader=FileSystemLoader('html'))
 
+def add_reservation(dane):
+    global database
+    dane = unquote(dane)
+    print(dane)
 
 def create_location(dane):
     global database
-    parsed_string = dane.split('=')
+    dane = unquote(dane)
+    print(dane)
+    parsed_string = dane.replace('+', ' ').split('=')
     dic = {}
 
     name = parsed_string[1].split('&')[0].strip()
@@ -36,6 +43,21 @@ class Serv(BaseHTTPRequestHandler):
         print(self.path)
         
         if self.path == '/create':
+            content_length = int(self.headers['Content-Length']) 
+            post_data = self.rfile.read(content_length) 
+            #Parse POST data, and send response
+            if create_location(post_data.decode('utf-8')):
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('ok', "utf-8"))
+            else:
+                self.send_response(404)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('ok', "utf-8"))
+
+        elif self.path == '/reserve':
             content_length = int(self.headers['Content-Length']) 
             post_data = self.rfile.read(content_length) 
             #Parse POST data, and send response

@@ -52,7 +52,28 @@
 
   <div class="container">
 
-        <input type="text" class="form-control text-center" id="searchLocationBar" aria-describedby="emailHelp" placeholder="Znajdz swoj sklep..">
+
+      <div class="reserve_form_button">
+        <h3 class="text-center">Rezerwuj miejsce w kolejce do </h3>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Imię</span>
+          </div>
+          <input type="text" class="form-control">
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Liczba osób</span>
+          </div>
+          <input type="number" class="form-control">
+        </div>
+        <input type="hidden" id="reserve_id">
+        <button class="btn btn-dark">Rezerwuj</button>
+
+      </div>
+
+
+        <input type="text" class="form-control text-center" id="searchLocationBar" placeholder="Znajdz swoj sklep..">
         <h2 class='text-center'>Lista sklepów</h2>
 
         <div class="row">
@@ -63,11 +84,11 @@
             {# Locations #}
 		      	{% for location in locations %}
             <div class="card">
-              <div class="card-body">
+              <div class="card-body" id="{{location.id}}">
                 <h5 class="card-title">{{location.name}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{location.address}}</h6>
                 <p class="card-text"> <i class="fas fa-users text-success"></i>  {{location.queue_size}}/{{location.max_size}} </p>
-                <a href="#" class="btn btn-primary">Rezerwuj</a>
+                <a href="#" point_to="{{location.id}}" class="btn btn-primary reserve-slot">Rezerwuj</a>
               </div>
             </div>
 			      {% endfor %}
@@ -84,7 +105,7 @@
   <script src="https://kit.fontawesome.com/fdbbd7bda3.js" crossorigin="anonymous"></script>
   <script src="/html/vendor/jquery/jquery.slim.min.js"></script>
   <script src="/html/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/html/js/shop-searching.js"></script>
+  <script src="/html/js/main.js"></script>
 
 </body>
 
