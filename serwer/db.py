@@ -22,10 +22,7 @@ class Location(object):
     def get_queue_size(self):
         return len(self.queue)
 
-    def add_to_queue(self, customer, db):
-        if customer.customerID in db.banned:
-            print("you are banned from joining any queues")
-            return
+    def add_to_queue(self, customer):
         if customer.customerID in self.queue:
             print("already in queue")
             return
@@ -43,10 +40,8 @@ class Location(object):
 class DB(object):
     def __init__(self):
         self.locations = {}
-        self.banned = []
 
     def add_location(self, locationID, name, address, size):
-        #Sprawdz czy lokalizacja nie zostala juz dodana
         print(self.locations)
         if locationID in self.locations.keys():
             print("Location already exists")
