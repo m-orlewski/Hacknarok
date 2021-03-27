@@ -20,7 +20,7 @@ $("#create-location").click(function () {
     //Kiedy zapytanie jest poprawne
     request.done(function( data ) {
         console.log(data);
-        $("#alert-div").append('<div class="alert alert-success" role="alert">Zostałeś dodany do kolejk!</div>');
+        $("#alert-div").append('<div class="alert alert-success" role="alert">Dodano nową lokalizację!</div>');
     });
     
     //Blad w zapytaniu

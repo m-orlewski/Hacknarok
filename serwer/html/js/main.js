@@ -1,3 +1,5 @@
+var statusInterval;
+
 function makeid(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -52,7 +54,10 @@ $(document).ready(function() {
   //Kiedy zapytanie jest poprawne
   request.done(function( data ) {
       console.log(data);
-      $("#alert-div").append('<div class="alert alert-success" role="alert">Dodano nową lokalizację!</div>');
+      $("#alert-div").append('<div class="alert alert-success" role="alert">Zostałeś dodany do kolejki!</div>');
+      // Constantly ask the databse for new messages
+      statusInterval = window.setInterval(getStatus, 500);
+
   });
   
   //Blad w zapytaniu
@@ -61,7 +66,15 @@ $(document).ready(function() {
   });
 
   $('#myLargeModalLabel').modal('toggle')
-
-
   
   });
+
+
+
+function getStatus() {
+    fetch(`/status`)
+    .then(res => res.text())
+    .then(data => {
+        console.log(data)
+    });   
+}
