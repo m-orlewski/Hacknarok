@@ -1,8 +1,9 @@
 class Location(object):
-    def __init__(self, id, name, address, size):
+    def __init__(self, id, name, address, coords, size):
         self.id = id
         self.name = name
         self.address = address
+        self.coords = []
         self.size = size
         self.queue = []
         self.wait_time = 0
@@ -34,7 +35,7 @@ class Location(object):
         else:
             self.queue.remove(customer)
             return True
-            
+
     def went_inside(self, customer):
         if customer not in self.inside or customer not in self.queue:
             print("Not in queue and not inside")
@@ -54,13 +55,11 @@ class DB(object):
     def __init__(self):
         self.locations = {}
 
-    def add_location(self, locationID, name, address, size):
-        print(self.locations)
+    def add_location(self, locationID, name, address, coords, size):
         if locationID in self.locations.keys():
             print("Location already exists")
             return False
-        self.locations[locationID] = Location(locationID, name, address, size)
-        print(self.locations)
+        self.locations[locationID] = Location(locationID, name, address, coords, size)
         return True
 
     def get_location(self, locationID):

@@ -3,7 +3,9 @@ $("#create-location").click(function () {
     const nazwa_sklepu  = $("#nazwa_sklepu").val();
     const adres_sklepu  = $("#adres_sklepu").val();
     const powierzchnia  = $("#powierzchnia").val();
+    const koordy  = $("#koordy").val();
 
+    
     console.log(nazwa_sklepu, adres_sklepu, powierzchnia);
     
 
@@ -12,6 +14,7 @@ $("#create-location").click(function () {
         method: "POST",
         data: { nazwa_sklepu:nazwa_sklepu,
                 adres_sklepu:adres_sklepu,
+                koordy:koordy,
                 powierzchnia:powierzchnia
                 },
       })

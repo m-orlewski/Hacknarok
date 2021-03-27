@@ -30,10 +30,11 @@ def create_location(dane):
     parsed_string = dane.replace('+', ' ').split('=')
     name = parsed_string[1].split('&')[0].strip()
     address = parsed_string[2].split('&')[0].strip()
-    size = parsed_string[3].strip()
-    hash_data = f'{name}{address}{size}'
+    coords = parsed_string[3].split('&')[0].strip()
+    size = parsed_string[4].strip()
+    hash_data = f'{name}{address}{coords}{size}'
     locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-    if database.add_location(locationid, name, address, int(size) ):
+    if database.add_location(locationid, name, address, coords, int(size) ):
         return True
     return False
 
@@ -175,14 +176,19 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(data, "utf-8"))
             return
 
+
+def test_locations(name, coords, address):
+    global database
+    size = random.randint(20, 1000)
+    hash_data = f'{name}{address}{coords}{size}'
+    locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
+    database.add_location(locationid, name, address, coords, int(size) )
+
+
+
 if __name__ == "__main__":
-    for i in range(20):
-        name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
-        address = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        size = random.randint(20, 1000)
-        hash_data = f'{name}{address}{size}'
-        locationid = sha256( bytes(hash_data, encoding='utf-8') ).hexdigest()
-        database.add_location(locationid, name, address, int(size) )
+    
+    test_locations('Biedronka', [50.0934188, 20.0223255], 'Generała Leopolda Okulickiego')
 
     httpd = HTTPServer(('localhost', 8080), Serv)
     print("Running server on localhost:8080")

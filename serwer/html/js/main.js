@@ -73,13 +73,11 @@ function getStatus() {
     .then(res => res.text())
     .then(data => {
         data = JSON.parse(data);
-        console.log(data);
-        $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
         if( data[1] == 1 ) {
-          //Moze wchodzic
+          $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
         }
         else {
-          //Musi czekac
+          $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
         }
         return data
     });   
@@ -90,7 +88,8 @@ $(".cancel_slot").click(function() {
   fetch(`/cancel`)
     .then(res => res.text())
     .then(data => {
-        console.log(data);
         clearInterval(statusInterval);
+        $('#myLargeModalLabel').modal('toggle')
+
     });   
 });

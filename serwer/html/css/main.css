@@ -6,7 +6,6 @@
 }
 
 #searchLocationBar {
-  margin-top: 2em;
   margin-bottom: 2em;
   font-size: 1.5em;
   width: 60%;
@@ -19,17 +18,6 @@
   color: black !important;
 }
 
-.reserve_form_form {
-  max-width: 60%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1em;
-}
-.reserve_form_form .input-group {
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
-
 .modal-content {
   padding: 1em;
 }
@@ -37,16 +25,20 @@
 .jumbotron {
   background-image: url('../../html/img/sklep.jpg');
   background-position: center top;
-  padding-top: 6em;
-  padding-bottom: 6em;
+  padding-top: 15em;
+  padding-bottom: 15em;
 }
 
-.jumbotron .container {
+.container-menu {
   text-align: center;
   color: black;
-  font-weight: bold !important;
 }
 
-.jumbotron .container h1 {
-font-size: 6em !important;
+.card-text {
+  margin: 0px;
 }
+
+.reserve-slot {
+  margin-top: 1em;
+}
+
