@@ -204,16 +204,16 @@ def test_locations(name, coords, address):
 
 if __name__ == "__main__":
     
-    test_locations('Biedronka', [50.0934188, 20.0223255], '')
-    test_locations('Biedronka', [50.024036949999996, 20.90635294440421], '')
-    test_locations('Biedronka', [50.0079917, 19.9588235], '')
-    test_locations('Biedronka', [50.06531735, 20.01617271773779], '')
-    test_locations('Biedronka', [50.08660945, 20.0268166642], '')
-    test_locations('Biedronka', [50.0842167, 19.924614087677945], '')
-    test_locations('Biedronka', [50.0732406, 20.0250832], '')
-    test_locations('Biedronka', [50.00630315, 20.019586802444557], '')
-    test_locations('Biedronka', [50.078535, 19.8920637], '')
-    test_locations('Biedronka', [50.012972250000004, 20.950265216025514], '')
+    test_locations('Biedronka', [50.0934188, 20.0223255], 'ul. Malczewskiego 2')
+    test_locations('Biedronka', [50.024036949999996, 20.90635294440421], 'ul. Wrocławska 30')
+    test_locations('Biedronka', [50.0079917, 19.9588235], 'ul. Adama Mickiewicza 20')
+    test_locations('Biedronka', [50.06531735, 20.01617271773779], 'ul. Mikołaja Kopernika 1')
+    test_locations('Biedronka', [50.08660945, 20.0268166642], 'ul. Miodowa 30')
+    test_locations('Biedronka', [50.0842167, 19.924614087677945], 'ul. Krakowska 5')
+    test_locations('Biedronka', [50.0732406, 20.0250832], 'ul. Bracka 7')
+    test_locations('Biedronka', [50.00630315, 20.019586802444557], 'ul. Testowa 1')
+    test_locations('Biedronka', [50.078535, 19.8920637], 'al. Kasztanowa 20')
+    test_locations('Biedronka', [50.012972250000004, 20.950265216025514], 'ul. Czekoladowa 213')
 
     test_locations('Kaufland', [50.0841107, 19.9362424], '')
     test_locations('Kaufland', [50.02981145, 19.911305415038086], '')
