@@ -3,10 +3,15 @@ from urllib.parse import urlparse
 import json, mimetypes, threading, time
 from db import DB
 from hashlib import sha256 
+from jinja2 import Template, Environment, FileSystemLoader
+
 
 html_path = '/html'
 
 database = DB()
+
+env = Environment(loader=FileSystemLoader('html'))
+
 
 def create_location(dane):
     global database
@@ -49,11 +54,15 @@ class Serv(BaseHTTPRequestHandler):
         if self.path == '/':
             self.path = '/index.html'
             data = open('html/index.html').read()
+            template = env.get_template('index.html')
+            output_from_parsed_template = template.render(users=['ala', 'janek', 'xd'], messages='')
+
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write(bytes(data, "utf-8"))
+            self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
+
         if self.path == '/create':
             path = 'html/create.html'
             self.path = '/create.html'
