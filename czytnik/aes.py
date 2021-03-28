@@ -17,7 +17,7 @@ def encrypt(raw):
     raw = pad(raw)
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(private_key, AES.MODE_CBC, iv)
-    return base64.b64encode(iv + cipher.encrypt(raw))
+    return base64.b64encode(iv + cipher.encrypt(bytes(raw, "utf-8")))
 
 def decrypt(enc):
     private_key = hashlib.sha256(password.encode("utf-8")).digest()
