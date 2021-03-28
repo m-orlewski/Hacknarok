@@ -1,6 +1,12 @@
 var statusInterval;
 var reserved;
 var updateInterval;
+
+var timer = 300;
+var minutes_seconds = [5, 0];
+var timerInterval = 0;
+
+
 function makeid(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -11,9 +17,21 @@ function makeid(length) {
   return result;
 }
 
+function timer_func() {
+  $("#time").html(`${minutes_seconds[0]}:${minutes_seconds[1]}`);
+  timer--;
+  const minutes = parseInt(timer/60);
+  const seconds = timer%60;
+  minutes_seconds = [minutes, seconds];
+  window.setTimeout(timer, 1000);
+}
+
+
+
 $(document).ready(function() {
   updateInterval = window.setInterval(sync, 2000);
   // $(".reserve_form_form").hide();
+  window.setInterval(timer_func, 1000);
 
   if(document.cookie.length == 0) {
     document.cookie = makeid(30);
@@ -57,7 +75,7 @@ $(document).ready(function() {
   //Kiedy zapytanie jest poprawne
   request.done(function( data ) {
       console.log(data);
-      $("#alert-div").append('<div class="alert alert-success" role="alert">Zostałeś dodany do kolejki!</div>');
+      $("#alert-div").html('<div class="alert alert-success" role="alert">Zostałeś dodany do kolejki!</div>');
       // Constantly ask the databse for new messages
       statusInterval = window.setInterval(getStatus, 500);
 
@@ -65,14 +83,13 @@ $(document).ready(function() {
 
   //Blad w zapytaniu
   request.fail(function( jqXHR, textStatus ) {
-      $("#alert-div").append('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
+      $("#alert-div").html('<div class="alert alert-danger" role="alert">Błąd podczas zapytania!</div>');
   });
   $('#myLargeModalLabel').modal({backdrop: 'static', keyboard: false})  
   $('#myLargeModalLabel').modal('toggle')
 
-  $('#qr-code').append('<img src="/generate" alt="kod qr" width="250px">')
+  $('#qr-code').html('<img src="/generate" alt="kod qr" width="250px">')
   });
-
 
 
 function getStatus() {
@@ -81,7 +98,7 @@ function getStatus() {
     .then(data => {
         data = JSON.parse(data);
         if( data[1] == 1 ) {
-          $("#que-status").html(`Jesteś ${data[1]} w kolejce<br/><h3>Możesz wejść do środka!<br/>Masz 5:00 na zeskanowanie kodu przy wejściu</h3>`);
+          $("#que-status").html(`Jesteś ${data[1]} w kolejce<br/><h3>Możesz wejść do środka!<br/>Masz <span id="time">${minutes_seconds[0]}:${minutes_seconds[1]}</span> na zeskanowanie kodu przy wejściu</h3>`);
           console.log("Mozesz wejsc");
         }
         else if (data[1] > 1){
@@ -90,6 +107,7 @@ function getStatus() {
         return data
     });
 }
+
 
 
 $(".cancel_slot").click(function() {
