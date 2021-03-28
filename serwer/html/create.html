@@ -16,19 +16,33 @@
   <!-- Bootstrap core CSS -->
   <link href="/html/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+
+  <link rel="stylesheet" href="html/css/add_shop_panel.css">
+
 </head>
 
 <body>
 
+  <nav class="navbar navbar-light bg-light">
+    <div class="container">
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-user-clock"></i>
+      Kolejkomierz
+    </a>
+  </div>
+  </nav>
 
   <!-- Page Content -->
-  <div class="container">
+  <div class="container form_positioning" >
     <div class="row">
-      <div class="col-lg-12 text-center">
+      <div class="col-lg-12 mt-3 text-center">
 
         <div id="alert-div">
 
         </div>
+
+          <div id="form_title">Formularz zgłoszeniowy</div>
+          <div id="form_subtitle">Zapewnij bezoieczeństwo. Uwolnij swój sklep od kolejek. Bądź nowoczesny.</div>
 
           <div class="form-group">
             <label for="exampleFormControlTextarea1">Nazwa sklepu</label>
@@ -40,7 +54,7 @@
           </div>
           <div class="form-group">
             <label for="exampleFormControlInput1">Koordynaty</label>
-            <input type="text" class="form-control" id="koordy" placeholder="Litewska 30">
+            <input type="text" class="form-control" id="koordy" placeholder="50.0772892-20.015808">
           </div>
           <div class="form-group">
             <label for="exampleFormControlInput1">Powierzchnia sklepu[m<sup>2</sup>]</label>
