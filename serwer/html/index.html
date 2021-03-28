@@ -47,7 +47,7 @@
       <div id="alert-div"></div>
       <div id="que-status"></div>
 	    <div id="qr-code"></div>
-      <a href="#" class="btn btn-danger toggle_enter">Test toggle</a>
+      <a href="#" class="btn btn-danger toggle_enter">Test toggle</a> </br>
       <a href="#" class="btn btn-danger cancel_slot">Zrezygnuj</a>
     </div>
   </div>
@@ -71,8 +71,8 @@
         <div class="card-body" id="{{location.id}}">
           <h5 class="card-title">{{location.name}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{location.address}}</h6>
-          <p class="card-text"> <i class="fas fa-users text-success"></i>  {{location.inside}}/{{location.max_size}} </p>
-          <p class="card-text"> <i class="fas fa-clock"></i>  00.00</p>
+          <p class="card-text" id='people-inside'> <i class="fas fa-users text-success"></i>  {{location.inside}}/{{location.max_size}} </p>
+          <p class="card-text" id='eta-wait'> <i class="fas fa-clock"></i>  00.00</p>
           <a href="#" point_to="{{location.id}}" class="btn btn-primary reserve-slot">Rezerwuj</a>
         </div>
       </div>

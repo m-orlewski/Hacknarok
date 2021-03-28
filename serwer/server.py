@@ -11,7 +11,7 @@ from inspect import getsourcefile
 import os.path as path, sys
 czytnik_dir = path.abspath(path.dirname(path.abspath(getsourcefile(lambda:0))) + '/../czytnik')
 sys.path.insert(0, czytnik_dir)
-import gen_qr
+#import gen_qr
 sys.path.pop(0)
 
 html_path = '/html'
@@ -47,16 +47,12 @@ def create_location(dane):
 
 
 def parse_path_with_args(path):
-    parsed_path = path.split('&')
-    question_mark = parsed_path[0].find("?")
-    parsed_path[0] = parsed_path[0][question_mark+1::]
-    keys = []
-    vals = []
-    for i in range(len(parsed_path)):
-        parsed_path[i] = parsed_path[i].split("=")
-        keys.append(parsed_path[i][0])
-        vals.append(parsed_path[i][1])
-    return dict(zip(keys, vals))
+    path = unquote(path)
+    path = path[path.find('?')+1:].split('&')
+    data = {}
+    for el in path:
+        data[ el[:el.find('=')] ] = el[el.find('=')+1:]
+    return data
 
 
 
@@ -108,7 +104,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/create':
+        elif self.path == '/create':
             template = env.get_template('create.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -118,7 +114,7 @@ class Serv(BaseHTTPRequestHandler):
             return
 
 
-        if self.path == '/register':
+        elif self.path == '/register':
             template = env.get_template('register.html')
             output_from_parsed_template = template.render(locations=database.get_all())
             self.send_response(200)
@@ -127,7 +123,7 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(output_from_parsed_template, "utf-8"))
             return
 
-        if self.path == '/status':
+        elif self.path == '/status':
             cookie = self.headers.get('Cookie')
             status = database.queue_index(cookie)
             self.send_response(200)
@@ -136,13 +132,22 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(status), "utf-8"))
             return
 
-        if self.path == '/generate':
+        elif self.path == '/generate':
             cookie = self.headers.get('Cookie')
             self.send_response(200)
             self.send_header("Content-type", "image/svg+xml")
             self.end_headers()
-            gen_qr.make(cookie)._write(self.wfile)
+            #gen_qr.make(cookie)._write(self.wfile)
             return
+
+        elif self.path == '/update':
+            status = database.get_all()
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(bytes(json.dumps(status), "utf-8"))
+            return
+
 
         elif self.path == '/cancel':
             print("CANCELING")
@@ -159,18 +164,24 @@ class Serv(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(bytes('err', "utf-8"))
 
-        if '/action?' in self.path:
+        elif '/action?' in self.path:
+            print(self.path)
             #handle request from scanner
             #request pattenr: action?locati on_id=1&client_id=1&direction=out
             value_key = parse_path_with_args(self.path)
-            location_id = value_key["location_id"]
-            customer_id = value_key["customer_id"]
-            direction = value_key["direction"]
+            location_id = value_key["locationID"]
+            customer_id = value_key["cusomterID"]
             location = database.get_location(location_id)
-            if direction == "in":
-                database.get_location(location_id).went_inside(customer_id)
-            if direction == "out":
-                pass
+            if location.switch_user(customer_id):
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('ok', "utf-8"))
+            else:
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write(bytes('err', "utf-8"))
             return
 
         else:
@@ -184,7 +195,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.wfile.write(data)
                 return
             else:
-                data = open(self.path[1::]).read()
+                data = open(self.path[1::], encoding='utf-8').read()
                 mimetype, _ = mimetypes.guess_type(self.path[1::])
             self.send_response(200)
             self.send_header('Content-type', mimetype)

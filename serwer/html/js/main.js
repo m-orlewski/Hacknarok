@@ -1,6 +1,6 @@
 var statusInterval;
 var reserved;
-
+var updateInterval;
 function makeid(length) {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -12,7 +12,7 @@ function makeid(length) {
 }
 
 $(document).ready(function() {
-
+  updateInterval = window.setInterval(sync, 2000);
   // $(".reserve_form_form").hide();
 
   if(document.cookie.length == 0) {
@@ -81,12 +81,11 @@ function getStatus() {
     .then(data => {
         data = JSON.parse(data);
         if( data[1] == 1 ) {
-          $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
+          $("#que-status").html(`Jesteś ${data[1]} w kolejce<br/><h3>Możesz wejść do środka!<br/>Masz 5:00 na zeskanowanie kodu przy wejściu</h3>`);
           console.log("Mozesz wejsc");
         }
-        else {
+        else if (data[1] > 1){
           $("#que-status").text(`Jesteś ${data[1]} w kolejce`);
-          console.log("Musisz poczekac");
         }
         return data
     });
@@ -126,3 +125,24 @@ request.fail(function( jqXHR, textStatus ) {
 });
 
 });
+
+
+function sync() {
+  fetch(`/update`)
+      .then(res => res.text())
+      .then(data => {
+          data = JSON.parse(data);
+            
+          for(var i=0; i<data.length; i++){
+            const id = data[i]['id'];
+            const inside = data[i]['inside'];
+            const max_size = data[i]['max_size'];
+            const queue_size = data[i]['queue_size'];
+            const time = data[i]['time'];
+
+            $(`#${id} #people-inside`).html( `<i class="fas fa-users text-success"></i>  ${inside}/${max_size}` );
+            $(`#${id} #eta-wait`).html( `<i class="fas fa-clock"></i>  ${time}` );
+
+          }
+        });
+}

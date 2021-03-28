@@ -49,12 +49,13 @@ class Location(object):
             self.inside.append(customer)
             self.queue.remove(customer)
             self.times[customer] = time.time()
-            return 
+            return True
         #If the user is inside and scans the code, he's leaving
         elif customer in self.inside and customer not in self.queue:
             self.inside.remove(customer)
             self.client_count += 1
             self.time_all_clients += time.time() - self.times[customer]
+            return True
 
     def estimated_time_wait(self):
         if self.client_count:
@@ -100,6 +101,7 @@ class DB(object):
                 'coords': location.coords,
                 'queue_size': len(location.queue),
                 'inside': len(location.inside),
+                'time': location.estimated_time_wait(),
                 'max_size': location.get_max_customers()
             }
             return_data.append(dc)
